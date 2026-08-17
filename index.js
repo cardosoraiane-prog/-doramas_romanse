@@ -45,17 +45,17 @@ Body JSON esperado:
 }
 */
 app.post("/imc", (req, res) => {
-    const { nome, idade, altura, peso } = req.body;
+    const { nome,anoDeLansamento , quantidadeDeEpisodios, } = req.body;
 
-    if (!nome || !idade || !altura || !peso) {
+    if (!nome || !anoDeLansamento  || quantidadeDeEpisodios) {
         return res.status(400).json({ erro: "Dados incompletos" });
     }
 
-    const imc = peso / (altura * altura);
+    const imc = peso / (  quantidadeDeEpisodios * quantidadeDeEpisodios );
 
     res.json({
         nome,
-        idade,
+        anoDeLansamento ,
         imc: imc.toFixed(2)
     });
 });
@@ -65,13 +65,13 @@ app.post("/imc", (req, res) => {
 CLIENTES ENDPOINTS
 ========================
 */
-const clientesFile = path.join(__dirname, "clientes.json");
+const doramaromanticosFile = path.join(__dirname, "Doramaromanticos.json");
 
-function lerClientes() {
-    if (!fs.existsSync(clientesFile)) {
+function lerDoramaromanticos() {
+    if (!fs.existsSync(doramaRomanticosFile)) {
         return [];
     }
-    const data = fs.readFileSync(clientesFile, "utf-8");
+    const data = fs.readFileSync(doramaRomanticosFile, "utf-8");
     try {
         return JSON.parse(data) || [];
     } catch (e) {
@@ -79,62 +79,63 @@ function lerClientes() {
     }
 }
 
-function salvarClientes(clientes) {
-    fs.writeFileSync(clientesFile, JSON.stringify(clientes, null, 2), "utf-8");
+function salvarDoramaromanticos(Doramaromanticos) {
+    fs.writeFileSync(doramaRomanticosFile, JSON.stringify(Doramaromanticos, null, 2), "utf-8");
 }
 
-// GET http://localhost:3000/clientes
-app.get("/clientes", (req, res) => {
-    const clientes = lerClientes();
-    res.json(clientes);
+// GET http://localhost:3000/Doramaromanticos
+app.get("/Doramaromanticos", (req, res) => {
+    const Doramaromanticos = lerDoramaromanticos();
+    res.json(Doramaromanticos);
 });
 
-// POST http://localhost:3000/clientes
-app.post("/clientes", (req, res) => {
-    const { cpf, nome, idade, endereco, bairro, contato } = req.body;
+// POST http://localhost:3000/Doramaromanticos
+app.post("/Doramaromanticos", (req, res) => {
+    const { nome, quantidadeDeEpisodios, anoDeLansamento , endereco, bairro, contato } = req.body;
 
-    if (!cpf || !nome) {
-        return res.status(400).json({ erro: "O CPF e o Nome são obrigatórios." });
+    if (!nome || !nome) {
+        return res.status(400).json({ erro: "O nome e o Nome são obrigatórios." });
     }
 
-    const clientes = lerClientes();
+    const doRamaromanticos = lerDoramaromanticos();
 
-    if (clientes.some(c => c.cpf === cpf)) {
-        return res.status(400).json({ erro: "Já existe um cliente com este CPF." });
+    if (doramaRomanticos.some(c => c.nome === nome)) {
+        return res.status(400).json({ erro: "Já existe um Doramaromanticos com este nome." });
     }
 
-    const novoCliente = { cpf, nome, idade, endereco, bairro, contato };
-    clientes.push(novoCliente);
-    salvarClientes(clientes);
+    const novoDoramaromanticos = { nome, quantidadeDeEpisodios, anoDeLansamento, endereco, bairro, contato };
+    doramaRomanticos.push(novoDoramaromanticos);
+    salvarDoramaromanticos(doramaRomanticos);
 
-    res.status(201).json({ mensagem: "Cliente adicionado com sucesso", cliente: novoCliente });
+    res.status(201).json({ mensagem: "Doramaromanticos adicionado com sucesso", Doramaromanticos: novoDoramaromanticos });
 });
 
-// PUT http://localhost:3000/clientes/:cpf
-app.put("/clientes/:cpf", (req, res) => {
-    const { cpf } = req.params;
-    const { nome, idade, endereco, bairro, contato } = req.body;
+// PUT http://localhost:3000/Doramaromanticos/:nome
+app.put("/Doramaromanticos/:nome", (req, res) => {
+    const { nome } = req.params;
+    const {quantidadeDeEpisodios, anoDeLansamento, endereco, bairro, contato } = req.body;
 
-    const clientes = lerClientes();
-    const index = clientes.findIndex(c => c.cpf === cpf);
+    const doramaRomanticos  = lerDoramaromanticos();
+    const index = Doramaromanticos.findIndex(c => c.cpf === cpf);
 
     if (index === -1) {
-        return res.status(404).json({ erro: "Cliente não encontrado." });
+        return res.status(404).json({ erro: "Doramaromanticos não encontrado." });
     }
 
-    clientes[index] = {
-        ...clientes[index],
-        cpf, // Mantém o CPF inalterado
+    doramaRomanticos [index] = {
+        ...doramaRomanticos [index],
+        nome, // Mantém o nome inalterado
         ...(nome !== undefined && { nome }),
-        ...(idade !== undefined && { idade }),
+        ...(anoDeLansamento !== undefined && { anoDeLansamento}),
         ...(endereco !== undefined && { endereco }),
         ...(bairro !== undefined && { bairro }),
-        ...(contato !== undefined && { contato })
+        ...(contato !== undefined && { contato }),
+        ...(quantidadeDeEpisodios !== undefined && {quantidadeDeEpisodios })
     };
 
-    salvarClientes(clientes);
+    salvarDoramaromanticos (doramaRomanticos );
 
-    res.json({ mensagem: "Cliente atualizado com sucesso", cliente: clientes[index] });
+    res.json({ mensagem: "Doramaromanticos  atualizado com sucesso", Doramaromanticos : Doramaromanticos [index] });
 });
 
 /*
