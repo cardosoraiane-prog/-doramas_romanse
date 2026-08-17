@@ -65,13 +65,13 @@ app.post("/imc", (req, res) => {
 CLIENTES ENDPOINTS
 ========================
 */
-const doramaromanticosFile = path.join(__dirname, "Doramaromanticos.json");
+const doramaromanticosFile = path.join(__dirname, "doramaromanticos.json");
 
 function lerDoramaromanticos() {
-    if (!fs.existsSync(doramaRomanticosFile)) {
+    if (!fs.existsSync(doramaromanticosFile)) {
         return [];
     }
-    const data = fs.readFileSync(doramaRomanticosFile, "utf-8");
+    const data = fs.readFileSync(doramaromanticosFile, "utf-8");
     try {
         return JSON.parse(data) || [];
     } catch (e) {
@@ -79,25 +79,25 @@ function lerDoramaromanticos() {
     }
 }
 
-function salvarDoramaromanticos(Doramaromanticos) {
-    fs.writeFileSync(doramaRomanticosFile, JSON.stringify(Doramaromanticos, null, 2), "utf-8");
+function salvarDoramaromanticos(doramaromanticos) {
+    fs.writeFileSync(doramaromanticosFile, JSON.stringify(doramaromanticos, null, 2), "utf-8");
 }
 
 // GET http://localhost:3000/Doramaromanticos
-app.get("/Doramaromanticos", (req, res) => {
-    const Doramaromanticos = lerDoramaromanticos();
-    res.json(Doramaromanticos);
+app.get("/doramaromanticos", (req, res) => {
+    const doramaromanticos = lerDoramaromanticos();
+    res.json(doramaromanticos);
 });
 
 // POST http://localhost:3000/Doramaromanticos
-app.post("/Doramaromanticos", (req, res) => {
+app.post("/doramaromanticos", (req, res) => {
     const { nome, quantidadeDeEpisodios, anoDeLansamento , endereco, bairro, contato } = req.body;
 
     if (!nome || !nome) {
         return res.status(400).json({ erro: "O nome e o Nome são obrigatórios." });
     }
 
-    const doRamaromanticos = lerDoramaromanticos();
+    const doramaRomanticos = lerDoramaromanticos();
 
     if (doramaRomanticos.some(c => c.nome === nome)) {
         return res.status(400).json({ erro: "Já existe um Doramaromanticos com este nome." });
@@ -111,7 +111,7 @@ app.post("/Doramaromanticos", (req, res) => {
 });
 
 // PUT http://localhost:3000/Doramaromanticos/:nome
-app.put("/Doramaromanticos/:nome", (req, res) => {
+app.put("/doramaromanticos/:nome", (req, res) => {
     const { nome } = req.params;
     const {quantidadeDeEpisodios, anoDeLansamento, endereco, bairro, contato } = req.body;
 
